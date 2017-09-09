@@ -1,9 +1,4 @@
-import sensor_input
-import time
-import sensor_output
 import statistics
-
-sensor_refernce_data = sensor_input.read_reference_data_from_file()
 
 
 def is_milk_H(wavelength, wavelength_interval=(100,200), threshold_down=200):
