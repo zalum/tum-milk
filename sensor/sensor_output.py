@@ -1,14 +1,26 @@
-import plotly.plotly as py
+import plotly.offline as py
 import plotly.graph_objs as go
 import sensor_input
 import random
+from pandas import Series
 
 
 def plot_spectrum_from_files(name,files):
     spectrums = []
     for file in files:
-        spectrums.append(read_spectrum_from_file(file))
+        spectrums.append(sensor_input.read_spectrum_from_file(file))
     plot_spectrums(name,spectrums)
+
+def plot_data_from_pandas(pandas):
+    data = []
+    for panda in pandas:
+        data.append(go.Scatter(
+            x=panda,
+            y=spectrum["power"],
+            marker = dict(
+                color = 'rgba(10, 10, 240, .9)'
+            )))
+    return data
 
 def get_plot_data(name, spectrums):
     data = []

@@ -42,8 +42,3 @@ sensor_output.plot_spectrum_from_files_group(
                                            "../data2/schale_morgen/5.csv",
                                        ]}
 )
-
-
-
-
-

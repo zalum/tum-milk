@@ -1,4 +1,9 @@
 import csv
+import pandas as pd
+
+pd.options.display.max_rows=20
+pd.options.display.max_columns=20
+
 
 def read_spectrum_from_file(file):
     spectrum = {}
@@ -18,3 +23,10 @@ def read_spectrum_from_files(files):
     for file in files:
         spectrums.append(read_spectrum_from_file(file))
     return spectrums
+
+def read_pandas_from_files(files):
+    data = []
+    for file in files:
+        spectrum = read_spectrum_from_file(file)
+        data.append(pd.DataFrame(spectrum).assign(label=(file.split("/")[2]), reading=int(file.split("/")[3].strip(".csv"))))
+    return pd.concat(data)
