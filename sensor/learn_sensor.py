@@ -80,3 +80,7 @@ prediction = clf.predict(test[["wavelength", "power"]].values)
 print(test.assign(prediction=prediction))
 #ms.cross_val_score(clf, test.power.values.reshape(7, 1), test.label2.values, scoring='accuracy')
 confusion_matrix(test.label2.values, prediction)
+
+
+# organize data per reading and features
+input_data.set_index(["label","reading"]).pivot(columns="wavelength")
