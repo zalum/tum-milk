@@ -2,7 +2,7 @@ import csv
 import pandas as pd
 
 pd.options.display.max_rows=20
-pd.options.display.max_columns=20
+pd.options.display.max_width=1000
 
 
 def read_spectrum_from_file(file):
