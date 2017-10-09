@@ -1,8 +1,20 @@
 import csv
-import pandas as pd
+import logging
 
-pd.options.display.max_rows=20
-pd.options.display.max_width=1000
+import pandas as pd
+import sys
+
+from df_utils import log_df
+
+pd.options.display.max_rows = 20
+pd.options.display.width = 1000
+
+
+log = logging.getLogger("sensor_input")
+log.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s [%(processName)s] [%(levelname)5s] %(message)s'))
+log.addHandler(handler)
 
 
 def read_spectrum_from_file(file):
@@ -24,9 +36,29 @@ def read_spectrum_from_files(files):
         spectrums.append(read_spectrum_from_file(file))
     return spectrums
 
+
 def read_pandas_from_files(files):
-    data = []
-    for file in files:
-        spectrum = read_spectrum_from_file(file)
-        data.append(pd.DataFrame(spectrum).assign(label=(file.split("/")[2]), reading=int(file.split("/")[3].strip(".csv"))))
-    return pd.concat(data)
+    return pd.concat(
+        [
+            pd
+                .DataFrame(
+                    [
+                        line.split(",")[1:]
+                        for line
+                        in open(file, 'r')
+                        if 'wavelength' in line or 'power' in line
+                    ],
+                    index=["wavelength", "power"]
+                )
+                .T
+                .assign(
+                    wavelength=lambda df: df.wavelength.astype('int'),
+                    power=lambda df: df.power.astype('float'),
+                    label=(file.split("/")[2]),
+                    reading=int(file.split("/")[3].strip(".csv"))
+                )
+                .pipe(log_df, log, file)
+            for file
+            in files
+        ]
+    )
